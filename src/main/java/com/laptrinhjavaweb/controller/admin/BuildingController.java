@@ -8,18 +8,31 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@WebServlet(urlPatterns = {"/admin-building"})
+
+@WebServlet(urlPatterns = { "/admin-building" })
 public class BuildingController extends HttpServlet {
 	private static final long serialVersionUID = 2686801510274002166L;
-	
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("/views/building/list.jsp");
-		//RequestDispatcher rd = request.getRequestDispatcher("/views/building/insertbuilding.jsp");
-		rd.forward(request, response);
-	}
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String action=request.getParameter("action");
+		String url="";
+		if(action.equals("LIST")) {
+			url="/views/building/list.jsp";
+			request.setAttribute("buildings","");
+		}else if(action.equals("EDIT")) {
+			url="/views/building/edit.jsp";
+		}
+		RequestDispatcher rd = request.getRequestDispatcher(url);
+		rd.forward(request, response);		
 		
+		
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 	}
 }

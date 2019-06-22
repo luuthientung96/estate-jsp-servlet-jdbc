@@ -23,6 +23,7 @@ public class BuildingDTO extends AbstractDTO{
 	private String managerName;
 	private String managerPhone;
 	private String type;
+	private String[] buildingTypes= new String[] {};
 	
 	
 	public String getType() {
@@ -150,6 +151,12 @@ public class BuildingDTO extends AbstractDTO{
 	}
 	public void setManagerPhone(String managerPhone) {
 		this.managerPhone = managerPhone;
+	}
+	public String[] getBuildingTypes() {
+		return buildingTypes;
+	}
+	public void setBuildingTypes(String[] buildingTypes) {
+		this.buildingTypes = buildingTypes;
 	}
 	
 }

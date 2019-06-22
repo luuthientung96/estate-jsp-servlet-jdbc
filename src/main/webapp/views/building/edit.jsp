@@ -190,13 +190,16 @@
 								<label class="col-sm-2">Loại sản phẩm</label>
 								<div class="col-sm-10">
 									<div class="checkbox">
-										<label><input type="checkbox" value="">Tầng trệt</label>
+										<label><input type="checkbox" value="">Tầng
+											trệt</label>
 									</div>
 									<div class="checkbox">
-										<label><input type="checkbox" value="">Nguyên căn</label>
+										<label><input type="checkbox" value="">Nguyên
+											căn</label>
 									</div>
 									<div class="checkbox">
-										<label><input type="checkbox" value="">Nội thất</label>
+										<label><input type="checkbox" value="">Nội
+											thất</label>
 									</div>
 								</div>
 							</div>
@@ -204,6 +207,13 @@
 								<label class="col-sm-2">Thêm hình ảnh</label>
 								<div class="col-sm-4">
 									<input type="file" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2"></label>
+								<div class="col-sm-4">
+									<button type="submit" class="btn btn-default">Hủy bỏ</button>
+									<button type="submit" class="btn btn-success">Thêm sản phẩm</button>
 								</div>
 							</div>
 						</form>
