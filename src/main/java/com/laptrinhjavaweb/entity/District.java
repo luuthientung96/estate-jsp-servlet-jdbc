@@ -1,7 +1,10 @@
 package com.laptrinhjavaweb.entity;
 
 import com.laptrinhjavaweb.annotation.Column;
-
+import com.laptrinhjavaweb.annotation.Entity;
+import com.laptrinhjavaweb.annotation.Table;
+@Entity
+@Table(name="district")
 public class District extends BaseEntity {
 	@Column(name="name")
 	private String name;

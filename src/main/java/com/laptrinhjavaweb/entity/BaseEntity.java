@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import com.laptrinhjavaweb.annotation.Column;
 import com.laptrinhjavaweb.annotation.Entity;
+import com.laptrinhjavaweb.annotation.Table;
 
 @Entity
 public class BaseEntity {
