@@ -1,9 +1,11 @@
 package com.laptrinhjavaweb.converter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -27,13 +29,19 @@ public class BuildingConverter {
 		Map<String, Object> condition= new HashMap<>();
 		condition.put("buildingid",buildingEntity.getId());
  		List<RentArea> rentAreas = rentAreaRepository.findAll(condition, new PageRequest(null, null, null));
+ 		//Java 7
 		List<String> areas = new ArrayList<>();
 		for (RentArea item : rentAreas) {
 			areas.add(item.getValue());
 		}
+		/*Java 8
+		List<RentArea> rentAreas = rentAreaRepository.findAll(condition, new PageRequest(null, null, null))
+		.stream().map(RentArea::getValue).collect(Collectors.toList());
+		*/
 		if(areas.size()>0) {
 			result.setRentArea(StringUtils.join(areas,","));
 		}
+		
 		return result;
 	}
 	

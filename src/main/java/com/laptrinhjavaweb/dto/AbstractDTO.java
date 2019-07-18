@@ -13,6 +13,7 @@ public class AbstractDTO<T> {
 	private int maxPageItem=10;
 	private int page=1;
 	private String action;
+	//Tạo mảng chứa tất cả các thuộc tính
 	List<T> listResults = new ArrayList<T>();
 	
 	public List<T> getListResults() {

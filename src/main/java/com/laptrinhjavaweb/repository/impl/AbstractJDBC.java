@@ -575,6 +575,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 //CREATE SQL FIND ALL
 	private StringBuilder createSQLfindAll(Map<String, Object> properties) {
 		String tableName = "";
+		//Lấy ra tên Table
 		if (zClass.isAnnotationPresent(Table.class)) {
 			Table table = zClass.getAnnotation(Table.class);
 			tableName = table.name();
@@ -584,17 +585,23 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 			String[] params = new String[properties.size()];
 			Object[] values = new Object[properties.size()];
 			int i = 0;
+			//Lấy key và value trong map put vào params và values
 			for (Map.Entry<?, ?> item : properties.entrySet()) {
 				params[i] = (String) item.getKey();
 				values[i] = item.getValue();
 				i++;
 			}
+			//Viết tiếp câu lệnh SELECT*FROM tableName A WHERE 1=1 and LOWER(name) like %abc%
 			for (int i1 = 0; i1 < params.length; i1++) {
 				if (values[i1] instanceof String) {
-					result.append(" and LOWER(" + params[i1] + ") LIKE '%" + values[i1].toString().toLowerCase() + "%'");
+					result.append(" and LOWER(" + params[i1] + ") LIKE '%" + values[i1].toString().toLowerCase()+ "%'");
 				}else if(values[i1] instanceof Integer) {
 					result.append(" and "+ params[i1] +"="+ values[i1]+ " ");
 				}
+				else if(values[i1] instanceof Long) {
+					result.append(" and "+ params[i1] +"="+ values[i1]+ " ");
+				}
+				
 			}
 		}
 		return result;

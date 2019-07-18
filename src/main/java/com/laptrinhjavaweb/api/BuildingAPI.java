@@ -24,14 +24,17 @@ public class BuildingAPI extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		//Đối tượng giúp chuyển qua lại giữa chuỗi JSON và model 
 		ObjectMapper mapper= new ObjectMapper();
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
+		//chuyển chuỗi JSON vào model
 		BuildingDTO buildingDTO= HttpUtil.of(request.getReader()).toModel(BuildingDTO.class); 
 		
 		//logic
 		
 		buildingDTO=buildingService.save(buildingDTO);
+		//Trả về JSON từ model
 		mapper.writeValue(response.getOutputStream(), buildingDTO);
 	}
 }

@@ -34,12 +34,13 @@ public class BuildingController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		//Lấy giá trị name trên thanh URL put vào BuildingDTO
 		BuildingDTO model = FormUtil.toModel(BuildingDTO.class,request);
 		String action = request.getParameter("action");
 		String url = "";
 		if (action.equals("LIST")) {
 			url = "/views/building/list.jsp";
-
+			//HAm Put giá trị từ BuildingDTO vào builder
 			BuildingSearchBuilder builder = initBuildingBuilder(model);
 			Pageble pageble = new PageRequest(null, null, null);
 			model.setListResults(buildingService.findAll(builder, pageble));
@@ -54,7 +55,7 @@ public class BuildingController extends HttpServlet {
 		rd.forward(request, response);
 
 	}
-
+	//Hàm Put giá trị từ BuildingDTO vào builder
 	private BuildingSearchBuilder initBuildingBuilder(BuildingDTO model) {
 		BuildingSearchBuilder builder = new BuildingSearchBuilder.Builder()
 				.setName(model.getName())
@@ -65,7 +66,7 @@ public class BuildingController extends HttpServlet {
 				.setAreaRentTo(model.getAreaRentTo())
 				.setCostRentFrom(model.getCostRentFrom())
 				.setCostRentTo(model.getCostRentTo()).build();
-		return builder;
+		return builder;//builder build 1 đối tượng mà chỉ chứa những cái ta cần
 	}
 
 	@Override

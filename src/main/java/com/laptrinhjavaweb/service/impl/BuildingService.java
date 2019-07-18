@@ -34,7 +34,7 @@ public class BuildingService implements IBuildingService {
 	public BuildingDTO save(BuildingDTO buildingDTO) {
 		BuildingEntity buildingEntity = buildingConverter.convertToEntity(buildingDTO);
 		buildingEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
-		buildingRepository.update(buildingEntity);
+		buildingRepository.insert(buildingEntity);
 		return null;
 	}
 
@@ -47,6 +47,8 @@ public class BuildingService implements IBuildingService {
 		 * buildingDTO=buildingConverter.convertToDTO(item); result.add(buildingDTO); }
 		 */
 		// Lam theo java 8
+		//Chuyển Entity sang DTO rồi thêm vào mảng result
+		//Hàm map chuyển đổi từ đối tượng này qua đối tượng khác,stream tạo luồng
 		List<BuildingDTO> results = buildingEntities.stream().map(item -> buildingConverter.convertToDTO(item))
 				.collect(Collectors.toList());
 
