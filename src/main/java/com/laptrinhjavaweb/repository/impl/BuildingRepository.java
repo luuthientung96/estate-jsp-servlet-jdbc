@@ -41,19 +41,21 @@ public class BuildingRepository extends AbstractJDBC<BuildingEntity> implements 
 			}
 			whereClause.append("))");
 		}
+		//Xu ly Building Type
 		if(builder.getBuildingTypes().length>0) {
+			whereClause.append(" AND (A.type LIKE '%"+builder.getBuildingTypes()[0]+"%'");
 			//Java 7
 			/*
 			for (String type : builder.getBuildingTypes()) {
-				whereClause.append(" AND (A.type LIKE '%"+builder.getBuildingTypes()[0]+"%'");
+				
 				if(!type.equals(builder.getBuildingTypes()[0])) {
-					whereClause.append(" OR A.type LIKE'&"+type+"&'");
+					whereClause.append(" OR A.type LIKE'%"+type+"%'");
 				}
 			}
 			*/
 			//Java 8
 			Arrays.stream(builder.getBuildingTypes()).filter(item -> !item.equals(builder.getBuildingTypes()[0]))
-			.forEach(item ->whereClause.append(" OR A.type LIKE'&"+item+"&'"));
+			.forEach(item ->whereClause.append(" OR A.type LIKE'%"+item+"%'"));
 			whereClause.append(" )");
 		}
 		return findAll(properties, pageble,whereClause.toString());
@@ -62,11 +64,13 @@ public class BuildingRepository extends AbstractJDBC<BuildingEntity> implements 
 	private Map<String, Object> buildMapSearch(BuildingSearchBuilder builder) {
 		Map<String, Object> result = new HashMap<>();
 		try {
+			//Lấy các field
 			Field[] fields = BuildingSearchBuilder.class.getDeclaredFields();
 			for (Field field : fields) {
 				//loại trừ các field phức tạp và add các field đơn giản vào map
 				if (!field.getName().equals("buildingTypes") && !field.getName().startsWith("costRent")
 						&& !field.getName().startsWith("areaRent")) {
+					//Cấp quyền cho cập cho các field
 					field.setAccessible(true);
 					if (field.get(builder) != null) {
 						result.put(field.getName().toLowerCase(), field.get(builder));

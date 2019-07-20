@@ -48,6 +48,7 @@ public class BuildingController extends HttpServlet {
 		} else if (action.equals("EDIT")) {
 			url = "/views/building/edit.jsp";
 		}
+		//DataUtils render giá trị từ Enum
 		request.setAttribute("districts", DataUtils.getDistricts());
 		request.setAttribute("buildingTypes", DataUtils.getBuildingTypes());
 		request.setAttribute("model", model);
@@ -65,6 +66,7 @@ public class BuildingController extends HttpServlet {
 				.setAreaRentFrom(model.getAreaRentFrom())
 				.setAreaRentTo(model.getAreaRentTo())
 				.setCostRentFrom(model.getCostRentFrom())
+				.setBuildingTypes(model.getBuildingTypes())
 				.setCostRentTo(model.getCostRentTo()).build();
 		return builder;//builder build 1 đối tượng mà chỉ chứa những cái ta cần
 	}

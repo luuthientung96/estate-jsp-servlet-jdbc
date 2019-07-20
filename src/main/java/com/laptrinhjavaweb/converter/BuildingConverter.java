@@ -39,6 +39,7 @@ public class BuildingConverter {
 		.stream().map(RentArea::getValue).collect(Collectors.toList());
 		*/
 		if(areas.size()>0) {
+			//Chuyển đổi qua chuỗi rentArea
 			result.setRentArea(StringUtils.join(areas,","));
 		}
 		

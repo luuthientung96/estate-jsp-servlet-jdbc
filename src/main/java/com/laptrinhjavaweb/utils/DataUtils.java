@@ -7,6 +7,7 @@ import com.laptrinhjavaweb.enums.BuildingTypeEnum;
 import com.laptrinhjavaweb.enums.DistrictEnum;
 
 public class DataUtils {
+	//Lấy Giá trị Loại tòa nhà trong ENum
 	public static Map<String, String> getBuildingTypes() {
 		Map<String, String> results = new HashMap<String, String>();
 		/*
@@ -19,6 +20,7 @@ public class DataUtils {
 		}
 		return results;
 		}
+	//Lấy giá trị quận trong Enum
 	public static Map<String, String> getDistricts() {
 		Map<String, String> results = new HashMap<String, String>();
 		for (DistrictEnum item : DistrictEnum.values()) {
