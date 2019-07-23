@@ -4,7 +4,9 @@ public class BuildingSearchBuilder {
 	private String name;
 	private String ward;
 	private String street;
-	//private Integer numberOfBasement;
+	private String district;
+	private String numberOfBasement;
+	private String buildingArea; 
 	private String costRentFrom;
 	private String costRentTo;
 	private String areaRentFrom;
@@ -15,7 +17,9 @@ public class BuildingSearchBuilder {
 		this.name = builder.name;
 		this.ward = builder.ward;
 		this.street = builder.street;
-		//this.numberOfBasement = builder.numberOfBasement;
+		this.district=builder.district;
+		this.numberOfBasement=builder.numberOfBasement;
+		this.buildingArea=builder.buildingArea;
 		this.costRentFrom = builder.costRentFrom;
 		this.costRentTo = builder.costRentTo;
 		this.areaRentFrom = builder.areaRentFrom;
@@ -34,6 +38,18 @@ public class BuildingSearchBuilder {
 
 	public String getAreaRentFrom() {
 		return areaRentFrom;
+	}
+
+	public String getNumberOfBasement() {
+		return numberOfBasement;
+	}
+
+	public String getBuildingArea() {
+		return buildingArea;
+	}
+
+	public String getDistrict() {
+		return district;
 	}
 
 	public String getAreaRentTo() {
@@ -60,7 +76,9 @@ public class BuildingSearchBuilder {
 		private String name;
 		private String ward;
 		private String street;
-		//private Integer numberOfBasement;
+		private String numberOfBasement;
+		private String buildingArea;
+		private String district;
 		private String costRentFrom;
 		private String costRentTo;
 		private String areaRentFrom;
@@ -81,12 +99,21 @@ public class BuildingSearchBuilder {
 			this.street = street;
 			return this;
 		}
-
-		/*public Builder setNumberOfBasement(Integer numberOfBasement) {
+		
+		public Builder setDistrict(String district) {
+			this.district = district;
+			return this;
+		}
+		public Builder setNumberOfBasement(String numberOfBasement) {
 			this.numberOfBasement = numberOfBasement;
 			return this;
 		}
-	*/
+
+		public Builder setBuildingArea(String buildingArea) {
+			this.buildingArea = buildingArea;
+			return this;
+		}
+		
 		public Builder setCostRentFrom(String costRentFrom) {
 			this.costRentFrom = costRentFrom;
 			return this;

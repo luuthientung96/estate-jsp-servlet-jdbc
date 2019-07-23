@@ -188,7 +188,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 			conn = getConnection();
 			conn.setAutoCommit(false);
 			String sql = createSQLInsert();
-			statement = conn.prepareStatement(sql);
+			statement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 
 			String tableName = "";
 			if (zClass.isAnnotationPresent(Table.class)) {
@@ -520,28 +520,28 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 
 //FIND ALL
 	@Override
-	public List<T> findAll(Map<String, Object> properties,Pageble pageble,Object...where) {
+	public List<T> findAll(Map<String, Object> properties, Pageble pageble, Object... where) {
 		Connection conn = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
 		ResultSetMapper<T> resultSetMapper = new ResultSetMapper<T>();
-		
+
 		StringBuilder sql = createSQLfindAll(properties);
-		if(where!=null && where.length>0) {
+		if (where != null && where.length > 0) {
 			sql.append(where[0]);
 		}
-		if(pageble!=null) {
-			if(pageble.getSorter()!=null) {
-				Sorter sorter =pageble.getSorter();
-				sql.append(" ORDER BY "+sorter.getSortName()+" "+sorter.getSortBy());
+		if (pageble != null) {
+			if (pageble.getSorter() != null) {
+				Sorter sorter = pageble.getSorter();
+				sql.append(" ORDER BY " + sorter.getSortName() + " " + sorter.getSortBy());
 			}
-			
-			if(pageble.getOffset()!=null && pageble.getLimit()!=null) {
-				sql.append(" LIMIT "+pageble.getOffset()+" , "+pageble.getLimit()+"");
+
+			if (pageble.getOffset() != null && pageble.getLimit() != null) {
+				sql.append(" LIMIT " + pageble.getOffset() + " , " + pageble.getLimit() + "");
 			}
 
 		}
-		
+
 		try {
 			conn = getConnection();
 			statement = conn.createStatement();
@@ -575,7 +575,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 //CREATE SQL FIND ALL
 	private StringBuilder createSQLfindAll(Map<String, Object> properties) {
 		String tableName = "";
-		//Lấy ra tên Table
+		// Lấy ra tên Table
 		if (zClass.isAnnotationPresent(Table.class)) {
 			Table table = zClass.getAnnotation(Table.class);
 			tableName = table.name();
@@ -585,23 +585,24 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 			String[] params = new String[properties.size()];
 			Object[] values = new Object[properties.size()];
 			int i = 0;
-			//Lấy key và value trong map put vào params và values
+			// Lấy key và value trong map put vào params và values
 			for (Map.Entry<?, ?> item : properties.entrySet()) {
 				params[i] = (String) item.getKey();
 				values[i] = item.getValue();
 				i++;
 			}
-			//Viết tiếp câu lệnh SELECT*FROM tableName A WHERE 1=1 and LOWER(name) like %abc%
+			// Viết tiếp câu lệnh SELECT*FROM tableName A WHERE 1=1 and LOWER(name) like
+			// %abc%
 			for (int i1 = 0; i1 < params.length; i1++) {
 				if (values[i1] instanceof String) {
-					result.append(" and LOWER(" + params[i1] + ") LIKE '%" + values[i1].toString().toLowerCase()+ "%'");
-				}else if(values[i1] instanceof Integer) {
-					result.append(" and "+ params[i1] +"="+ values[i1]+ " ");
+					result.append(
+							" and LOWER(" + params[i1] + ") LIKE '%" + values[i1].toString().toLowerCase() + "%'");
+				} else if (values[i1] instanceof Integer) {
+					result.append(" and " + params[i1] + "=" + values[i1] + " ");
+				} else if (values[i1] instanceof Long) {
+					result.append(" and " + params[i1] + "=" + values[i1] + " ");
 				}
-				else if(values[i1] instanceof Long) {
-					result.append(" and "+ params[i1] +"="+ values[i1]+ " ");
-				}
-				
+
 			}
 		}
 		return result;

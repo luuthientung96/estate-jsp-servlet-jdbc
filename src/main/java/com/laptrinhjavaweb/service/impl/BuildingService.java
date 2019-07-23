@@ -4,22 +4,27 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import org.apache.commons.lang.StringUtils;
 
 import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.converter.BuildingConverter;
 import com.laptrinhjavaweb.dto.BuildingDTO;
 import com.laptrinhjavaweb.entity.BuildingEntity;
+import com.laptrinhjavaweb.entity.RentArea;
 import com.laptrinhjavaweb.paging.Pageble;
 import com.laptrinhjavaweb.repository.IBuildingRepository;
+import com.laptrinhjavaweb.repository.IRentAreaRepository;
+import com.laptrinhjavaweb.repository.impl.BuildingRepository;
+import com.laptrinhjavaweb.repository.impl.RentAreaRepository;
 import com.laptrinhjavaweb.service.IBuildingService;
 
 public class BuildingService implements IBuildingService {
-	@Inject
-	private IBuildingRepository buildingRepository;
-	@Inject
-	private BuildingConverter buildingConverter;
-	
+	//@Inject
+	private IBuildingRepository buildingRepository = new BuildingRepository();
+	//@Inject //chỉ sử dụng được cho interface,nếu class có constructor không dùng được denpedency 
+	private BuildingConverter buildingConverter = new BuildingConverter();
+	//@Inject 
+	private IRentAreaRepository rentAreaRepository = new RentAreaRepository();
 	/*
 	public BuildingService() { 
 		if(buildingRepository==null) {
@@ -34,8 +39,21 @@ public class BuildingService implements IBuildingService {
 	public BuildingDTO save(BuildingDTO buildingDTO) {
 		BuildingEntity buildingEntity = buildingConverter.convertToEntity(buildingDTO);
 		buildingEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
-		buildingRepository.insert(buildingEntity);
-		return null;
+		buildingEntity.setCreateBy("");
+		if(buildingDTO.getBuildingTypes().length>0) {
+			buildingEntity.setType(StringUtils.join(buildingDTO.getBuildingTypes(),","));
+		}
+		
+		Long id=buildingRepository.insert(buildingEntity);
+		//save rentArea
+		String[] array=buildingDTO.getRentArea().split(",");
+		for(String item : array) {
+				RentArea rentArea = new RentArea();
+				rentArea.setValue(item);
+				rentArea.setBuildingId(id);
+				rentAreaRepository.insert(rentArea);
+		}
+		return buildingConverter.convertToDTO(buildingRepository.findbyId(id));
 	}
 
 	@Override
@@ -53,6 +71,12 @@ public class BuildingService implements IBuildingService {
 				.collect(Collectors.toList());
 
 		return results;
+	}
+
+	@Override
+	public BuildingDTO findById(Long id) {
+		
+		return buildingConverter.convertToDTO(buildingRepository.findbyId(id));
 	}
 
 
