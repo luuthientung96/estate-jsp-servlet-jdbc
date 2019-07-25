@@ -79,5 +79,40 @@ public class BuildingService implements IBuildingService {
 		return buildingConverter.convertToDTO(buildingRepository.findbyId(id));
 	}
 
+	@Override
+	public void update(BuildingDTO updateBuilding,Long id) {
+		BuildingEntity oldBuilding = buildingRepository.findbyId(id);
+		BuildingEntity newBuilding=buildingConverter.convertToEntity(updateBuilding);
+		newBuilding.setCreateBy(oldBuilding.getCreateBy());
+		newBuilding.setCreateDate(oldBuilding.getCreateDate());
+		//rent area
+		String rentArea=updateBuilding.getRentArea();	
+		updateRenArea(rentArea,id);
+		newBuilding.setType(StringUtils.join(updateBuilding.getBuildingTypes(),","));
+		buildingRepository.update(newBuilding);
+	}
+
+	private void updateRenArea(String rentAreaStr, Long buildingId) {
+		// delete rentarea theo building id
+		rentAreaRepository.deleteByBuilding(buildingId);
+		for (String item : rentAreaStr.split(",")) {
+			RentArea rentArea = new RentArea();
+			rentArea.setBuildingId(buildingId);
+			rentArea.setValue(item);
+			//insert rentarea
+			rentAreaRepository.insert(rentArea);
+			
+		}
+	}
+
+	@Override
+	public void delete(Long[] ids) {
+		for(long item : ids) {
+			rentAreaRepository.deleteByBuilding(item);
+			buildingRepository.delete(item);
+		}
+		
+	}
+
 
 }

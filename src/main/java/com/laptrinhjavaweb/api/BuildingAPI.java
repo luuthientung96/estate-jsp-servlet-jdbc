@@ -45,12 +45,22 @@ public class BuildingAPI extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 		//chuyển chuỗi JSON vào model
-		BuildingDTO buildingDTO= HttpUtil.of(request.getReader()).toModel(BuildingDTO.class); 
-		
+		BuildingDTO updateBuilding= HttpUtil.of(request.getReader()).toModel(BuildingDTO.class); 
 		//logic
-		
-		//buildingDTO=buildingService.save(buildingDTO);
+		buildingService.update(updateBuilding,updateBuilding.getId());
 		//Trả về JSON từ model
-		mapper.writeValue(response.getOutputStream(), buildingDTO);
-	}
-}
+		mapper.writeValue(response.getOutputStream(),"{}");	}
+
+@Override
+protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	//Đối tượng giúp chuyển qua lại giữa chuỗi JSON và model 
+	ObjectMapper mapper= new ObjectMapper();
+	request.setCharacterEncoding("UTF-8");
+	response.setContentType("application/json");
+	//chuyển chuỗi JSON vào model
+	BuildingDTO buildingDTO= HttpUtil.of(request.getReader()).toModel(BuildingDTO.class); 
+	//logic
+	buildingService.delete(buildingDTO.getIds());
+	//Trả về JSON từ model
+	mapper.writeValue(response.getOutputStream(),"{}");	}
+} 

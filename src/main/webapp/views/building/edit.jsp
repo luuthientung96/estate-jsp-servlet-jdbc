@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Trang chủ</title>
+<title>Cập nhật tòa nhà</title>
 </head>
 <body>
 	<div class="main-content">
@@ -208,7 +208,7 @@
 							</c:forEach>
 						</div>
 					</div>
-					<input type="hidden" name="id" value="${model.id }" id="buildingId">
+					<input type="hidden" name="id" value="${model.id}" id="buildingId">
 				</form>
 
 				<div class="row text-center btn-addsp">
@@ -247,7 +247,7 @@
 			if (buildingId == '') {
 				addBuilding(data);
 			} else {
-				editBuilding(data, id);
+				editBuilding(data, buildingId);
 			}
 		}
 
@@ -270,8 +270,22 @@
 						},
 					});
 		}
-		function editBuilding(data, id) {
+		function editBuilding(data,id) {
+			$.ajax({
+				url : '${buildingAPI}',//link tới api-admin-building
+				data : JSON.stringify(data),//dữ liệu gửi lên api chuyển về JSON vì khi ở ngoài Client mọi thứ đều là object
+				type : 'PUT',
+				contentType : 'application/json',//đẩy dữ liệu từ Client qua Server để hiểu data là JSON
+				success : function(data) {
+					//Khi Update thành công thì load lại trang EDIT đưa ra thông báo update thành công
+					window.location.href = "${buildingURL}?action=EDIT&id="+id+"&message=update_success";
 
+				},
+				error : function() {
+					//Đưa ra thông báo lỗi nếu không thêm thành công
+					window.location.href = "${buildingURL}?action=LIST&message=error_system";
+				},
+			});
 		}
 	</script>
 </body>

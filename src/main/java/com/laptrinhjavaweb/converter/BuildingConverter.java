@@ -44,7 +44,6 @@ public class BuildingConverter {
 		if(StringUtils.isNotBlank(buildingEntity.getType())) {
 			 result.setBuildingTypes(buildingEntity.getType().split(","));
 		}
-
 		return result;
 	}
 
@@ -57,6 +56,7 @@ public class BuildingConverter {
 		if(StringUtils.isNotBlank(buildingDTO.getBuildingArea())){
 			result.setBuildingArea(Integer.parseInt(buildingDTO.getBuildingArea()));
 		}
+		
 		return result;
 	}
 }

@@ -13,6 +13,7 @@ public interface GenericJDBC<T> {
 	public Long insert(Object object);
 	void update(Object object);
 	void delete(long id);
+	void deleteByProperty(String where);
 	<T> T findbyId(long id);
 	
 	

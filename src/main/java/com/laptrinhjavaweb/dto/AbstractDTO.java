@@ -13,7 +13,14 @@ public class AbstractDTO<T> {
 	private int maxPageItem=10;
 	private int page=1;
 	private String action;
+	private Long[] ids;
 	
+	public Long[] getIds() {
+		return ids;
+	}
+	public void setIds(Long[] ids) {
+		this.ids = ids;
+	}
 	List<T> listResults = new ArrayList<T>();
 	
 	public List<T> getListResults() {

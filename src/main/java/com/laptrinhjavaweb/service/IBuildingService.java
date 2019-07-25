@@ -7,6 +7,9 @@ import com.laptrinhjavaweb.paging.Pageble;
 
 public interface IBuildingService {
 BuildingDTO save(BuildingDTO newBuilding);
+void update(BuildingDTO updateBuilding,Long id);
+void delete(Long[] ids);
 List<BuildingDTO> findAll(BuildingSearchBuilder builder,Pageble pageble);
 BuildingDTO findById(Long id);
+
 }
