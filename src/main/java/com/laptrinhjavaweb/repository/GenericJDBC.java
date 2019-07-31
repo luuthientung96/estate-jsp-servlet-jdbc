@@ -15,6 +15,7 @@ public interface GenericJDBC<T> {
 	void delete(long id);
 	void deleteByProperty(String where);
 	<T> T findbyId(long id);
+	int countByProperty(Map<String, Object> properties, Object... where);
 	
 	
 }

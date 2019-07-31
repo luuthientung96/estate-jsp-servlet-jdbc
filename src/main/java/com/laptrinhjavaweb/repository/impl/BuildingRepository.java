@@ -18,6 +18,52 @@ public class BuildingRepository extends AbstractJDBC<BuildingEntity> implements 
 	@Override
 	public List<BuildingEntity> findAll(BuildingSearchBuilder builder, Pageble pageble) {
 		Map<String, Object> properties = buildMapSearch(builder);
+		StringBuilder whereClause = buildWhereClause(builder);
+		return findAll(properties, pageble, whereClause.toString());
+	}
+
+	// Chuyển dữ liệu builder vào map
+	private Map<String, Object> buildMapSearch(BuildingSearchBuilder builder) {
+		Map<String, Object> result = new HashMap<>();
+		try {
+			// Lấy các field
+			Field[] fields = BuildingSearchBuilder.class.getDeclaredFields();
+			for (Field field : fields) {
+				// loại trừ các field phức tạp và add các field đơn giản vào map
+				if (!field.getName().equals("buildingTypes") && !field.getName().startsWith("costRent")
+						&& !field.getName().startsWith("areaRent")) {
+					// Cấp quyền cho cập cho các field
+					field.setAccessible(true);
+
+					if (field.get(builder) != null) {
+						if (field.getName().equals("buildingArea") || field.getName().equals("numberOfBasement")) {
+							if(StringUtils.isNotEmpty((String) field.get(builder))){
+								result.put(field.getName().toLowerCase(), Integer.parseInt((String) field.get(builder)));
+							}
+							
+						} else {
+							result.put(field.getName().toLowerCase(), field.get(builder));
+						}
+
+					}
+
+				}
+			}
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	@Override
+	public int countByProperty(BuildingSearchBuilder builder) {
+		Map<String, Object> properties = buildMapSearch(builder);
+		StringBuilder whereClause = buildWhereClause(builder);
+		return countByProperty(properties, whereClause.toString());
+	}
+
+	private StringBuilder buildWhereClause(BuildingSearchBuilder builder) {
 		StringBuilder whereClause = new StringBuilder();
 		if (StringUtils.isNotBlank(builder.getCostRentFrom())) {
 			whereClause.append(" AND costrent >= " + builder.getCostRentFrom() + "");
@@ -55,38 +101,6 @@ public class BuildingRepository extends AbstractJDBC<BuildingEntity> implements 
 					.forEach(item -> whereClause.append(" OR A.type LIKE'%" + item + "%'"));
 			whereClause.append(" )");
 		}
-		return findAll(properties, pageble, whereClause.toString());
-	}
-
-	// Chuyển dữ liệu builder vào map
-	private Map<String, Object> buildMapSearch(BuildingSearchBuilder builder) {
-		Map<String, Object> result = new HashMap<>();
-		try {
-			// Lấy các field
-			Field[] fields = BuildingSearchBuilder.class.getDeclaredFields();
-			for (Field field : fields) {
-				// loại trừ các field phức tạp và add các field đơn giản vào map
-				if (!field.getName().equals("buildingTypes") && !field.getName().startsWith("costRent")
-						&& !field.getName().startsWith("areaRent")) {
-					// Cấp quyền cho cập cho các field
-					field.setAccessible(true);
-
-					if (field.get(builder) != null) {
-						if (field.getName().equals("buildingArea") || field.getName().equals("numberOfBasement")) {
-							result.put(field.getName().toLowerCase(), Integer.parseInt((String) field.get(builder)));
-						}else {
-							result.put(field.getName().toLowerCase(), field.get(builder));
-						}
-					
-						
-					}
-
-				}
-			}
-		} catch (IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
-
-		return result;
+		return whereClause;
 	}
 }

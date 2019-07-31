@@ -26,7 +26,7 @@
 				<div class="row">
 					<div class="col-xs-12">
 						<!-- Search box -->
-						<form action="${buildingURL}" method="get">
+						<form action="${buildingURL}" method="get" id="formSubmit">
 							<div class="widget-box table-filter">
 								<div class="widget-header">
 									<h4 class="widget-title">Tìm kiếm</h4>
@@ -184,8 +184,8 @@
 											<input type="hidden" name="action" value="LIST" />
 											<div class="form-group">
 												<div class="col-sm-12">
-													<button type="submit" class="btn btn-success">Tìm
-														kiếm</button>
+													<button type="button" id="btnSearch"
+														class="btn btn-success">Tìm kiếm</button>
 												</div>
 
 											</div>
@@ -194,6 +194,11 @@
 									</div>
 								</div>
 							</div>
+							<input type="hidden" value="" id="page" name="page" />
+							<input type="hidden" value="10" id="maxPageItem"
+								name="maxPageItem" /> <input type="hidden" value=""
+								id="sortName" name="sortName" /> <input type="hidden" value=""
+								id="sortBy" name="sortBy" />
 						</form>
 						<!-- button Add,Delete  -->
 						<div class="table-btn-controls">
@@ -261,19 +266,29 @@
 						</table>
 					</div>
 				</div>
+				<div class="container">
+					<ul class="pagination" id="pagination"></ul>
+				</div>
 			</div>
 		</div>
 	</div>
 	<!-- /.main-content -->
 	<script type="text/javascript">
+		$('#btnSearch').click(function() {
+			$('#page').val(1);//truyền giá trị page muốn đến vào input id="page" và khi ấn tìm kiếm page phải về trang 1
+			//$('#maxPageItem').val(10);//số item hiển thị trên 1 trang
+			$('#sortName').val('name');
+			$('#sortBy').val('ASC');
+			$('#formSubmit').submit(); // Khi kick vào các trang thì submit vào form
+		});
 		$('#btnDelete').click(
 				function name() {
 					var dataArray = $('tbody input[type=checkbox]:checked')
 							.map(function() {
 								return $(this).val();
 							}).get();
-					var data={};
-					data['ids']=dataArray;
+					var data = {};
+					data['ids'] = dataArray;
 					deleteBuilding(data);
 				});
 		function deleteBuilding(data) {
@@ -283,9 +298,9 @@
 						data : JSON.stringify(data),//dữ liệu gửi lên api chuyển về JSON vì khi ở ngoài Client mọi thứ đều là object
 						type : 'DELETE',
 						contentType : 'application/json',//đẩy dữ liệu từ Client qua Server để hiểu data là JSON
-						success : function(data){
+						success : function(data) {
 							//Khi xóa thành công thì load lại trang EDIT đưa ra thông báo xóa thành công
-							window.location.href = "${buildingURL}&message=delete_success";
+							window.location.href = "${buildingURL}&page=1&maxPageItem=10&message=delete_success";
 
 						},
 						error : function() {
@@ -294,6 +309,27 @@
 						},
 					});
 		}
+		var totalPage = ${model.totalPage};
+		var currentPage = ${model.page};
+		$(function() {
+			window.pagObj = $('#pagination').twbsPagination({
+				totalPages : totalPage,
+				visiblePages : 5,
+				startPage : currentPage,
+				onPageClick : function(event, page) {
+
+					if (currentPage != page) {//nếu trang hiện tại khác trang muốn tới
+						$('#page').val(page);//truyền giá trị page muốn đến vào input id="page"
+						//$('#maxPageItem').val(10);//số item hiển thị trên 1 trang
+						$('#sortName').val('name');
+						$('#sortBy').val('ASC');
+						$('#formSubmit').submit(); // Khi kick vào các trang thì submit vào form
+					}
+					console.info(page);
+
+				}
+			});
+		});
 	</script>
 </body>
 </html>

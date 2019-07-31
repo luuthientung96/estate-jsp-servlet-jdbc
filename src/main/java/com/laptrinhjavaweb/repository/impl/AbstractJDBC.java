@@ -9,8 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.laptrinhjavaweb.annotation.Column;
 import com.laptrinhjavaweb.annotation.Table;
@@ -337,8 +340,8 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 						if (!name.equals("id")) {
 							statement.setObject(indexParent, field.get(object));
 							indexParent = indexParent + 1;
-						}else {
-							id=field.get(object);
+						} else {
+							id = field.get(object);
 						}
 
 					}
@@ -533,7 +536,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 			sql.append(where[0]);
 		}
 		if (pageble != null) {
-			if (pageble.getSorter() != null) {
+			if (pageble.getSorter() != null && StringUtils.isNotBlank(pageble.getSorter().getSortName())) {
 				Sorter sorter = pageble.getSorter();
 				sql.append(" ORDER BY " + sorter.getSortName() + " " + sorter.getSortBy());
 			}
@@ -571,7 +574,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 			}
 
 		}
-		return null;
+		return new ArrayList<>();//trả về 1 list không giá trị để khi ra buildingservice cái buildingEntity không bị null
 	}
 
 //CREATE SQL FIND ALL
@@ -623,7 +626,7 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 				Table table = zClass.getAnnotation(Table.class);
 				tableName = table.name();
 			}
-			String sql = "DELETE FROM " + tableName + " "+where;
+			String sql = "DELETE FROM " + tableName + " " + where;
 			statement = conn.createStatement();
 
 			if (conn != null) {
@@ -654,6 +657,86 @@ public class AbstractJDBC<T> implements GenericJDBC<T> {
 
 		}
 
+	}
+
+	// Đếm số item khi Search theo điều kiện where
+	@Override
+	public int countByProperty(Map<String, Object> properties, Object... where) {
+		Connection conn = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		ResultSetMapper<T> resultSetMapper = new ResultSetMapper<T>();
+
+		StringBuilder sql = createSQLCountByProperty(properties);
+		if (where != null && where.length > 0) {
+			sql.append(where[0]);
+		}
+
+		try {
+			conn = getConnection();
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery(sql.toString());
+
+			if (conn != null) {
+				while(resultSet.next()) {
+					return resultSet.getInt("COUNT(*)");
+				}
+			}
+
+		} catch (SQLException e) {
+			e.getMessage();
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+				if (statement != null) {
+					statement.close();
+				}
+				if (resultSet != null) {
+					resultSet.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+
+		}
+		return 0;
+	}
+
+	private StringBuilder createSQLCountByProperty(Map<String, Object> properties) {
+		String tableName = "";
+		// Lấy ra tên Table
+		if (zClass.isAnnotationPresent(Table.class)) {
+			Table table = zClass.getAnnotation(Table.class);
+			tableName = table.name();
+		}
+		StringBuilder result = new StringBuilder("SELECT COUNT(*) FROM " + tableName + " A WHERE 1=1");
+		if (properties != null && properties.size() > 0) {
+			String[] params = new String[properties.size()];
+			Object[] values = new Object[properties.size()];
+			int i = 0;
+			// Lấy key và value trong map put vào params và values
+			for (Map.Entry<?, ?> item : properties.entrySet()) {
+				params[i] = (String) item.getKey();
+				values[i] = item.getValue();
+				i++;
+			}
+			// Viết tiếp câu lệnh SELECT*FROM tableName A WHERE 1=1 and LOWER(name) like
+			// %abc%
+			for (int i1 = 0; i1 < params.length; i1++) {
+				if (values[i1] instanceof String) {
+					result.append(
+							" and LOWER(" + params[i1] + ") LIKE '%" + values[i1].toString().toLowerCase() + "%'");
+				} else if (values[i1] instanceof Integer) {
+					result.append(" and " + params[i1] + "=" + values[i1] + " ");
+				} else if (values[i1] instanceof Long) {
+					result.append(" and " + params[i1] + "=" + values[i1] + " ");
+				}
+
+			}
+		}
+		return result;
 	}
 
 }

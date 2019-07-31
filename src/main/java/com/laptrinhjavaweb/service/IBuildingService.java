@@ -10,6 +10,7 @@ BuildingDTO save(BuildingDTO newBuilding);
 void update(BuildingDTO updateBuilding,Long id);
 void delete(Long[] ids);
 List<BuildingDTO> findAll(BuildingSearchBuilder builder,Pageble pageble);
+int getTotalItem(BuildingSearchBuilder builder);
 BuildingDTO findById(Long id);
 
 }

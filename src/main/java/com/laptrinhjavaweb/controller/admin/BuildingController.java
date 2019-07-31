@@ -9,10 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.laptrinhjavaweb.builder.BuildingSearchBuilder;
 import com.laptrinhjavaweb.dto.BuildingDTO;
 import com.laptrinhjavaweb.paging.PageRequest;
 import com.laptrinhjavaweb.paging.Pageble;
+import com.laptrinhjavaweb.paging.Sorter;
 import com.laptrinhjavaweb.service.IBuildingService;
 import com.laptrinhjavaweb.service.impl.BuildingService;
 import com.laptrinhjavaweb.utils.DataUtils;
@@ -39,7 +42,10 @@ public class BuildingController extends HttpServlet {
 			url = "/views/building/list.jsp";
 			// HAm Put giá trị từ BuildingDTO vào builder
 			BuildingSearchBuilder builder = initBuildingBuilder(model);
-			Pageble pageble = new PageRequest(null, null, null);
+			Sorter sorter=new Sorter(model.getSortName(), model.getSortBy());
+			Pageble pageble = new PageRequest(model.getPage(),model.getMaxPageItem(),sorter);
+			model.setTotalItem(buildingService.getTotalItem(builder));
+			model.setTotalPage((int) Math.ceil((double)model.getTotalItem()/model.getMaxPageItem()));
 			model.setListResults(buildingService.findAll(builder, pageble));
 			// request.setAttribute("buildings",buildingService.findAll(builder, pageble));
 		} else if (action.equals("EDIT")) {

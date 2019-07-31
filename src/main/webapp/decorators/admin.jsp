@@ -61,5 +61,7 @@
 <script src="<c:url value='/template/admin/assets/js/bootstrap.min.js' />"></script>
 <script src="<c:url value='/template/admin/assets/js/ace-elements.min.js' />"></script>
 <script src="<c:url value='/template/admin/assets/js/ace.min.js' />"></script>
+<!-- Jquery twbspagination -->
+<script src="<c:url value='/template/admin/js/paging/jquery.twbsPagination.js' />"></script>
 </body>
 </html>
